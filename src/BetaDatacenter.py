@@ -55,8 +55,12 @@ class BetaDatacenter(FixedCostDatacenter):
         for i,dc in enumerate(others):
             adjusted_cost = dc.mean + (self.beta * dc.sigma)
             risk_ordered.append((adjusted_cost, dc,i))
+        try:
+            risk_ordered.sort()
+        except TypeError as e:
+            print(e)
+            print(risk_ordered)
 
-        risk_ordered.sort()
         for (adjusted_cost,dc,i) in risk_ordered:
             ### determine predicted revenue
             predicted_additional_revenue = (self.cost - dc.mean) * self.alpha
