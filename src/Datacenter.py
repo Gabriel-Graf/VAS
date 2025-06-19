@@ -1,7 +1,7 @@
 from typing import Callable, List, Optional
 
 class Offer:
-    def __init__(self, sender, original_cost: float, accept: Callable[[float], None]):
+    def __init__(self, sender, original_cost: float, accept: Callable[[float, int], None]):
         self.sender = sender
         self.original_cost = original_cost
         self.accept = accept

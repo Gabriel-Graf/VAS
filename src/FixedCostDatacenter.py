@@ -5,8 +5,9 @@ from typing import Optional, List
 from Datacenter import Datacenter, Offer
 
 class FixedCostDatacenter(Datacenter):
-    def __init__(self, name: str, cost: float, alpha: float, price: float):
+    def __init__(self, name: str, dc_id: int, cost: float, alpha: float, price: float):
         self.name = name
+        self.dc_id = dc_id
         self.cost = cost
         self.alpha = alpha
         self.price = price
@@ -32,7 +33,7 @@ class FixedCostDatacenter(Datacenter):
         filtered.sort(key=lambda o: o.original_cost, reverse=True)
         self.selected_offer = filtered[0] if filtered else None
         if self.selected_offer:
-            self.selected_offer.accept(self.cost)
+            self.selected_offer.accept(self.cost, self.dc_id)
             print(f"[SLCT] {self.name} accepts offer of {self.selected_offer.sender}")
         self.received_offers.clear()
 
