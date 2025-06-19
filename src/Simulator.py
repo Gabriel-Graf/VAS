@@ -31,7 +31,7 @@ def initialize_datacenters(n, price, p_star, beta_tuning_freq, eta, alpha):
         BetaDatacenter("Rechenzentrum 3", 3, 30, alpha, price, 4, p_star, beta_tuning_freq, eta),
         BetaDatacenter("Rechenzentrum 4", 4, 40, alpha, price, 20, p_star, beta_tuning_freq, eta),
         BetaDatacenter("Rechenzentrum 5", 5, 50, alpha, price, 15, p_star, beta_tuning_freq, eta),
-        BetaDatacenter("Rechenzentrum 6", 5, 60, alpha, price, 15, p_star, beta_tuning_freq, eta),
+        BetaDatacenter("Rechenzentrum 6", 6, 60, alpha, price, 15, p_star, beta_tuning_freq, eta),
     ]
 
 
@@ -148,7 +148,7 @@ def plot_bar_chart_data(values, legend_title):
     ax.set_yticklabels(categories)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.grid(True, which='both', linestyle='--', linewidth=0.5, zorder=0)
-    # plt.tight_layout()
+    plt.tight_layout()
 
     return fig, ax
 
@@ -249,8 +249,8 @@ def plot_send_and_accepted(send_to, accepted_by, dir_name):
 
 def main():
     number_of_datacenters = 5  ## not used
-    price = 65
-    alpha = 0.8
+    price = 75
+    alpha = 0.5
     max_rounds = 10000
     p_star = 0.8
     beta_tuning_freq = 10
@@ -271,10 +271,12 @@ def main():
     plot_revenue(revenue_per_round, total_revenue_per_round, datacenters, save_dir_name)
     plot_beta(beta_per_round, datacenters, save_dir_name)
     plot_send_to(offers_send_to, save_dir_name)  # can take a while
-    plot_accepted_by(offers_accepted_by,save_dir_name)
+    plot_accepted_by(offers_accepted_by,save_dir_name) # can take a while
     # plot_send_to_matrix(offers_send_to)
     # plot_accepted_by_matrix(offers_accepted_by)
     plot_send_and_accepted(offers_send_to, offers_accepted_by, save_dir_name)
+
+    print(f"Avg. Total Revenue: {np.mean(total_revenue_per_round[:-1000])}")
 
 
 if __name__ == "__main__":
