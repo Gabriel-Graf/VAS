@@ -250,7 +250,7 @@ def plot_send_and_accepted(send_to, accepted_by, dir_name):
 def main():
     number_of_datacenters = 5  ## not used
     price = 75
-    alpha = 0.5
+    alpha = 0.8
     max_rounds = 10000
     p_star = 0.8
     beta_tuning_freq = 10
