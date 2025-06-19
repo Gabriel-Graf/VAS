@@ -56,7 +56,8 @@ class BetaDatacenter(FixedCostDatacenter):
             adjusted_cost = dc.mean + (self.beta * dc.sigma)
             risk_ordered.append((adjusted_cost, dc,i))
         try:
-            risk_ordered.sort()
+            # risk_ordered.sort()
+            risk_ordered = sorted(risk_ordered, key=lambda x: x[0])
         except TypeError as e:
             print(e)
             print(risk_ordered)
@@ -77,7 +78,7 @@ class BetaDatacenter(FixedCostDatacenter):
                 self.accepted_by = dc_id
 
             others[chosen_index].receive(Offer(self.name, self.cost, accept))
-            print(f"[SEND] {self.name} sends offer to {others[chosen_index].name} with own cost {self.cost}")
+            # print(f"[SEND] {self.name} sends offer to {others[chosen_index].name} with own cost {self.cost}")
             self.send_to = others[chosen_index].dc_id
 
         self.round_count += 1

@@ -34,7 +34,7 @@ class FixedCostDatacenter(Datacenter):
         self.selected_offer = filtered[0] if filtered else None
         if self.selected_offer:
             self.selected_offer.accept(self.cost, self.dc_id)
-            print(f"[SLCT] {self.name} accepts offer of {self.selected_offer.sender}")
+            # print(f"[SLCT] {self.name} accepts offer of {self.selected_offer.sender}")
         self.received_offers.clear()
 
 
@@ -43,5 +43,5 @@ class FixedCostDatacenter(Datacenter):
         secondary_revenue = 0.0
         if self.selected_offer:
             secondary_revenue = (self.selected_offer.original_cost - self.cost) * (1 - self.alpha)
-        print(f"[RVNE] {self.name} evalutes to ownRevenue: {own_revenue}, secondaryRevenue: {secondary_revenue}")
+        # print(f"[RVNE] {self.name} evalutes to ownRevenue: {own_revenue}, secondaryRevenue: {secondary_revenue}")
         return own_revenue + math.ceil(secondary_revenue)

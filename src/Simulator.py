@@ -31,7 +31,7 @@ def initialize_datacenters(n, price, p_star, beta_tuning_freq, eta, alpha):
         BetaDatacenter("Rechenzentrum 3", 3, 30, alpha, price, 4, p_star, beta_tuning_freq, eta),
         BetaDatacenter("Rechenzentrum 4", 4, 40, alpha, price, 20, p_star, beta_tuning_freq, eta),
         BetaDatacenter("Rechenzentrum 5", 5, 50, alpha, price, 15, p_star, beta_tuning_freq, eta),
-        BetaDatacenter("Rechenzentrum 6", 6, 60, alpha, price, 15, p_star, beta_tuning_freq, eta),
+        # BetaDatacenter("Rechenzentrum 6", 6, 60, alpha, price, 15, p_star, beta_tuning_freq, eta),
     ]
 
 
@@ -54,8 +54,8 @@ def simulate(datacenters, max_rounds):
             offers_accepted_by[i, r] = current.accepted_by
 
         overall = [dc.calculate_revenue() for dc in datacenters]
-        print(f"[TOTAL] Revenue for round {r + 1}: {np.sum(overall)}")
-        print(f"the revenue is {overall} with an overall of {sum(overall)}")
+        # print(f"[TOTAL] Revenue for round {r + 1}: {np.sum(overall)}")
+        # print(f"the revenue is {overall} with an overall of {sum(overall)}")
         revenue_per_round = np.column_stack((revenue_per_round, np.array(overall)))
         total_revenue_per_round.append(np.sum(overall))
 
@@ -257,26 +257,37 @@ def main():
     eta = 0.1
 
     seed = 1308
-
-    # Set the seed for NumPy
     np.random.seed(seed)
-    datacenters = initialize_datacenters(number_of_datacenters, price, p_star, beta_tuning_freq, eta, alpha)
 
+    ### für mehrere runs
+    # avgs = []
+    # for i in range(10):
+    #
+    #     datacenters = initialize_datacenters(number_of_datacenters, price, p_star, beta_tuning_freq, eta, alpha)
+    #     revenue_per_round, total_revenue_per_round, beta_per_round, offers_send_to, offers_accepted_by = simulate(
+    #         datacenters, max_rounds)
+    #
+    #     avgs.append(np.mean(total_revenue_per_round[:-1000]))
+    #     print(f"Avg. Total Revenue: {np.mean(total_revenue_per_round[:-1000])}")
+    # print("AVG AVG: {:.2f}".format(np.mean(avgs)))
+
+    datacenters = initialize_datacenters(number_of_datacenters, price, p_star, beta_tuning_freq, eta, alpha)
+    revenue_per_round, total_revenue_per_round, beta_per_round, offers_send_to, offers_accepted_by = simulate(
+        datacenters, max_rounds)
     save_dir_name = f"run_n{len(datacenters)}_p{price}_a{alpha}_b{beta_tuning_freq}_ps{p_star}_e{eta}_s{seed}"
     os.makedirs(f"figs/{save_dir_name}", exist_ok=True)
 
-    revenue_per_round, total_revenue_per_round, beta_per_round, offers_send_to, offers_accepted_by = simulate(
-        datacenters, max_rounds)
+
     plot_distributions(datacenters, save_dir_name)
     plot_revenue(revenue_per_round, total_revenue_per_round, datacenters, save_dir_name)
     plot_beta(beta_per_round, datacenters, save_dir_name)
-    plot_send_to(offers_send_to, save_dir_name)  # can take a while
-    plot_accepted_by(offers_accepted_by,save_dir_name) # can take a while
+    # plot_send_to(offers_send_to, save_dir_name)  # can take a while
+    # plot_accepted_by(offers_accepted_by,save_dir_name) # can take a while
     # plot_send_to_matrix(offers_send_to)
     # plot_accepted_by_matrix(offers_accepted_by)
     plot_send_and_accepted(offers_send_to, offers_accepted_by, save_dir_name)
 
-    print(f"Avg. Total Revenue: {np.mean(total_revenue_per_round[:-1000])}")
+
 
 
 if __name__ == "__main__":
