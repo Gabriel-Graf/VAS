@@ -19,11 +19,12 @@ from FixedCostDatacenter import FixedCostDatacenter
 
 def initialize_datacenters(n, price, p_star, beta_tuning_freq, eta, alpha):
     # return [
-    #     BetaDatacenter("Rechenzentrum 1", 1, 10, alpha, price, 8, p_star, beta_tuning_freq, eta),
-    #     BetaDatacenter("Rechenzentrum 2", 2, 20, alpha, price, 30, p_star, beta_tuning_freq, eta),
-    #     BetaDatacenter("Rechenzentrum 3", 3, 30, alpha, price, 4, p_star, beta_tuning_freq, eta),
-    #     BetaDatacenter("Rechenzentrum 4", 4, 40, alpha, price, 20, p_star, beta_tuning_freq, eta),
-    #     BetaDatacenter("Rechenzentrum 5", 5, 50, alpha, price, 15, p_star, beta_tuning_freq, eta),
+    #     BetaDatacenter("Rechenzentrum 1", 1, 5, alpha, price, 4, p_star, beta_tuning_freq, eta),
+    #     BetaDatacenter("Rechenzentrum 2", 2, 20, alpha, price, 8, p_star, beta_tuning_freq, eta),
+    #     BetaDatacenter("Rechenzentrum 3", 3, 30, alpha, price, 12, p_star, beta_tuning_freq, eta),
+    #     BetaDatacenter("Rechenzentrum 4", 4, 40, alpha, price, 10, p_star, beta_tuning_freq, eta),
+    #     BetaDatacenter("Rechenzentrum 5", 5, 65, alpha, price, 7, p_star, beta_tuning_freq, eta),
+    #     BetaDatacenter("Rechenzentrum 6", 6, 80, alpha, price, 11, p_star, beta_tuning_freq, eta),
     # ]
     return [
         BetaDatacenter("Rechenzentrum 1", 1, 10, alpha, price, 8, p_star, beta_tuning_freq, eta),
@@ -31,7 +32,7 @@ def initialize_datacenters(n, price, p_star, beta_tuning_freq, eta, alpha):
         BetaDatacenter("Rechenzentrum 3", 3, 30, alpha, price, 4, p_star, beta_tuning_freq, eta),
         BetaDatacenter("Rechenzentrum 4", 4, 40, alpha, price, 20, p_star, beta_tuning_freq, eta),
         BetaDatacenter("Rechenzentrum 5", 5, 50, alpha, price, 15, p_star, beta_tuning_freq, eta),
-        # BetaDatacenter("Rechenzentrum 6", 6, 60, alpha, price, 15, p_star, beta_tuning_freq, eta),
+        BetaDatacenter("Rechenzentrum 6", 6, 60, alpha, price, 15, p_star, beta_tuning_freq, eta),
     ]
 
 
@@ -118,7 +119,7 @@ def plot_bar_chart_data(values, legend_title):
     categories = [f'RZ {i + 1}' for i in range(0, values.shape[0])]
     # Define colors for the chunks
     # colors = ['#FF9999', '#66B3FF', '#99FF99']  # Colors for 1, 2, 3 /respectively
-    colormap = cm.get_cmap('plasma', values.shape[0])  # 'viridis' colormap with 6 distinct colors
+    colormap = cm.get_cmap('Dark2', values.shape[0])  # 'viridis' colormap with 6 distinct colors
     colors = [colormap(i) for i in range(colormap.N)]  # Extract colors from the colormap
     labels_set = [False for l in categories]  # Labels for the legend
     # Create a figure and axis
@@ -148,7 +149,6 @@ def plot_bar_chart_data(values, legend_title):
     ax.set_yticklabels(categories)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.grid(True, which='both', linestyle='--', linewidth=0.5, zorder=0)
-    plt.tight_layout()
 
     return fig, ax
 
@@ -160,6 +160,7 @@ def plot_send_to(values, dir_name):
     ax.set_ylabel('Sending RZ')
     ax.set_xlabel('Rounds')
     ax.set_title('RZ i send to RZ j')
+    plt.tight_layout()
     # Show the plot
     plt.savefig(f"figs/{dir_name}/sendTo_{dir_name}.png")
     plt.show()
@@ -250,14 +251,15 @@ def plot_send_and_accepted(send_to, accepted_by, dir_name):
 def main():
     number_of_datacenters = 5  ## not used
     price = 75
+    # price = 80
     alpha = 0.8
     max_rounds = 10000
     p_star = 0.8
     beta_tuning_freq = 10
     eta = 0.1
 
-    seed = 1308
-    np.random.seed(seed)
+    # seed = 1308
+    # np.random.seed(seed)
 
     ### für mehrere runs
     # avgs = []
@@ -274,17 +276,16 @@ def main():
     datacenters = initialize_datacenters(number_of_datacenters, price, p_star, beta_tuning_freq, eta, alpha)
     revenue_per_round, total_revenue_per_round, beta_per_round, offers_send_to, offers_accepted_by = simulate(
         datacenters, max_rounds)
-    save_dir_name = f"run_n{len(datacenters)}_p{price}_a{alpha}_b{beta_tuning_freq}_ps{p_star}_e{eta}_s{seed}"
-    os.makedirs(f"figs/{save_dir_name}", exist_ok=True)
+    print(f"Avg. Total Revenue: {np.mean(total_revenue_per_round[:-1000])}")
 
+    save_dir_name = f"run_n{len(datacenters)}_p{price}_a{alpha}_b{beta_tuning_freq}_ps{p_star}_e{eta}_s{seed}_dist2"
+    os.makedirs(f"figs/{save_dir_name}", exist_ok=True)
 
     plot_distributions(datacenters, save_dir_name)
     plot_revenue(revenue_per_round, total_revenue_per_round, datacenters, save_dir_name)
     plot_beta(beta_per_round, datacenters, save_dir_name)
     # plot_send_to(offers_send_to, save_dir_name)  # can take a while
     # plot_accepted_by(offers_accepted_by,save_dir_name) # can take a while
-    # plot_send_to_matrix(offers_send_to)
-    # plot_accepted_by_matrix(offers_accepted_by)
     plot_send_and_accepted(offers_send_to, offers_accepted_by, save_dir_name)
 
 

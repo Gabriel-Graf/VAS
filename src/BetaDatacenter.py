@@ -31,7 +31,9 @@ class BetaDatacenter(FixedCostDatacenter):
         self.send_to = None
         self.accepted_by = None
     def true_false_ratio(self):
-        return sum(self.history) / self.beta_tuning_freq
+        ratio =  sum(self.history) / self.beta_tuning_freq
+        self.history.clear()
+        return ratio
 
     def get_gaussian_cost(self):
         # np.random.normal(self.mean, self.variance)
