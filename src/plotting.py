@@ -50,6 +50,34 @@ def plot_revenue(revenue_per_round, total_revenue_per_round, datacenters, dir_na
     plt.show()
 
 
+def plot_revenue_bar_for_one_rz(avg_revenue_per_round, total_revenue_per_round, datacenters, dir_name, rz_index=0, suffix=""):
+    sns.set_theme()
+    bar = sns.displot(avg_revenue_per_round, multiple="stack",)
+    # for i in range(len(datacenters)):
+
+        # mean = avg_revenue_per_round[:,i].mean()
+        # sns.lineplot(x=[mean, mean], y=[0, 100], color='red', linestyle='--', label='Mean')
+
+
+
+    #
+    # fig, ax = plt.subplots(figsize=(10, 6))
+    # plt.hist(revenue_per_round, 10, density=True, histtype='bar', stacked=True)
+    # # plot(total_revenue_per_round, label="Total Revenue", linestyle="--")
+    plt.title("Avg. Revenue per RZ" + f" {suffix}")
+    plt.xlabel('Revenue')
+    plt.ylabel('Count')
+    # # ax.set_yscale('log')
+    # # ax.set_ylim([0.1, 10**3])
+    # # ax.set_xscale('log')
+    #
+    # # plt.legend(loc="upper right")
+    #
+    # plt.grid()
+    # plt.tight_layout()
+    plt.savefig(f"figs/{dir_name}/revenue_bar_{dir_name}_{suffix}.svg")
+    plt.show()
+
 def plot_beta(beta_per_round, datacenters, dir_name):
     fig, ax = plt.subplots(figsize=(10, 6))
     for i in range(len(datacenters)):
@@ -108,6 +136,8 @@ def plot_bar_chart_data(values, legend_title):
 
 
 def plot_send_to(values, dir_name, suffix=""):
+    print("[INFO] Plotting 'Send To Plot'. MAy take a while!")
+
     fig, ax = plot_bar_chart_data(values, legend_title="Receiving RZ", )
 
     # Set labels and title
@@ -121,6 +151,7 @@ def plot_send_to(values, dir_name, suffix=""):
 
 
 def plot_accepted_by(values, dir_name):
+    print("[INFO] Plotting 'Send To Plot'. MAy take a while!")
     fig, ax = plot_bar_chart_data(values, "Accepting RZ")
 
     # Set labels and title
