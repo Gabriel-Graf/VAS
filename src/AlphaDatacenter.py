@@ -351,3 +351,8 @@ class AlphaDatacenter(FixedCostDatacenter):
             o.decline()
 
         self.received_offers.clear()
+
+    def get_alpha(self):
+        return self.state.alpha_i if self.state else np.nan
+    def get_partner(self):
+        return self.state.j if self.state else np.nan

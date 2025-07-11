@@ -78,6 +78,50 @@ def plot_revenue_bar_for_one_rz(avg_revenue_per_round, total_revenue_per_round, 
     plt.savefig(f"figs/{dir_name}/revenue_bar_{dir_name}_{suffix}.svg")
     plt.show()
 
+def plot_alpha(alphas, offers_send_to, datacenters, dir_name, dc_index=3, section=[4000,5000], suffix=""):
+    from matplotlib.lines import Line2D
+    sns.set_theme()
+    fig, axes = plt.subplots(nrows=len(datacenters)-dc_index, ncols=1, figsize=(16,9))  # 16:9 aspect ratio
+    # Loop through each subplot and create a line plot
+
+    palette = sns.color_palette()
+    for i in range(dc_index, len(datacenters)):
+        # Initialize a list to hold the change indices for each dimension
+
+        # Find the indices where the values change
+        change_indices = np.where(np.diff(offers_send_to[i]) != 0)[0] + 1  # +1 to adjust for the diff
+        change_indices = np.append(change_indices, np.array([offers_send_to.shape[1]]))
+        ax = i-dc_index
+        color = palette[i]
+        sns.lineplot(data=alphas[i,:], ax=axes[ax],  color=color)
+        for j in range(0,len(change_indices)-1):
+            color = palette[int(offers_send_to[i,change_indices[j]-1])]
+            axes[ax].axvspan(change_indices[j], change_indices[j+1], color=color, alpha=0.3)  # Adjust alpha for transparency
+
+        axes[ax].set_title(f'Alpha per Round for RZ {i + 1}', fontsize=12)  # Title font size
+        axes[ax].set_xlabel('Round', fontsize=10)  # X-label font size
+        axes[ax].set_ylabel('Alpha', fontsize=10)  # Y-label font size
+        axes[ax].grid()
+        axes[ax].set_xlim(section)
+        axes[ax].set_ylim([-0.1, 1.1])
+
+        # Collect the handle and label for the legend
+
+    labels = [f'RZ {i + 1}' for i in range(6)]  # Create labels
+
+    legend_handles = [Line2D([0], [0], color=palette[i], lw=4) for i in range(6)]
+    # Create a single legend for all subplots
+    fig.legend(legend_handles, labels, loc='upper right', fontsize='medium')
+
+    # Adjust layout to reduce spacing
+    plt.subplots_adjust(hspace=0.4)  # Adjust vertical spacing between plots
+
+    # plt.legend()
+    plt.tight_layout()
+    # plt.legend(loc="upper right")
+    plt.savefig(f"figs/{dir_name}/alpha_{dir_name}.svg")
+    plt.show()
+
 def plot_beta(beta_per_round, datacenters, dir_name):
     fig, ax = plt.subplots(figsize=(10, 6))
     for i in range(len(datacenters)):

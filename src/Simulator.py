@@ -64,6 +64,9 @@ def simulate(datacenters, max_rounds):
     offers_send_to = np.empty((len(datacenters), max_rounds), float)
     offers_accepted_by = np.empty((len(datacenters), max_rounds), float)
 
+    alphas = np.empty((len(datacenters), max_rounds), float)
+    partners = np.empty((len(datacenters), max_rounds), float)
+
     optimal_revenue_per_round = np.empty((len(datacenters), 0), float)
     optimal_total_revenue_per_round = []
     optimal_offers_send_to = np.empty((len(datacenters), 0), int)
@@ -84,6 +87,7 @@ def simulate(datacenters, max_rounds):
             current.evaluate(others)
             # betas_per_round[i, r] = current.beta
             offers_send_to[i, r] = current.send_to
+            alphas[i, r] = current.get_alpha()
             dc_by_real_cost.append(current)
 
         ### optimal ------------
@@ -107,7 +111,7 @@ def simulate(datacenters, max_rounds):
         for dc in datacenters:
             dc.round_reset()
 
-    return (revenue_per_round, np.array(total_revenue_per_round), betas_per_round, offers_send_to, offers_accepted_by,
+    return (revenue_per_round, np.array(total_revenue_per_round), betas_per_round, offers_send_to, offers_accepted_by, alphas,
             optimal_revenue_per_round, np.array(optimal_total_revenue_per_round), optimal_offers_send_to, optimal_offers_accepted_by)
 
 def initialize_datacenters(n, price, p_star, beta_tuning_freq, eta, alpha):
@@ -178,7 +182,7 @@ def run_multiple():
         np.random.seed(i)
         datacenters = initialize_datacenters(number_of_datacenters, price, p_star, beta_tuning_freq, eta, alpha)
         (revenue_per_round, total_revenue_per_round, beta_per_round, offers_send_to,
-         offers_accepted_by, optimal_revenue_per_round, optimal_total_revenue_per_round, optimal_offers_send_to,
+         offers_accepted_by, alphas, optimal_revenue_per_round, optimal_total_revenue_per_round, optimal_offers_send_to,
          optimal_offers_accepted_by) = simulate(datacenters, max_rounds)
 
         avg_rev_per_run = np.vstack((avg_rev_per_run, revenue_per_round.mean(axis=1)))
@@ -245,8 +249,8 @@ def main():
     # print("AVG AVG: {:.2f}".format(np.mean(avgs)))
 
     datacenters = initialize_datacenters(number_of_datacenters, price, p_star, beta_tuning_freq, eta, alpha)
-    (revenue_per_round, total_revenue_per_round, beta_per_round, offers_send_to,
-     offers_accepted_by, optimal_revenue_per_round, optimal_total_revenue_per_round, optimal_offers_send_to, optimal_offers_accepted_by) = simulate(datacenters, max_rounds)
+    (revenue_per_round, total_revenue_per_round, beta_per_round, offers_send_to, offers_accepted_by,
+     alphas, optimal_revenue_per_round, optimal_total_revenue_per_round, optimal_offers_send_to, optimal_offers_accepted_by) = simulate(datacenters, max_rounds)
 
     print(f"Avg. Total Revenue: {np.mean(total_revenue_per_round[:-1000])}")
     print(f"Avg. Opt Total Revenue: {np.mean(optimal_total_revenue_per_round[:-1000])}")
@@ -260,12 +264,12 @@ def main():
     # plot_beta(beta_per_round, datacenters, save_dir_name)
     # plot_send_to(optimal_offers_send_to, save_dir_name,suffix="optimal")  # can take a while
     # plot_send_to(offers_send_to, save_dir_name)  # can take a while
-    plot_send_to(offers_send_to, save_dir_name)  # can take a while
-    plot_accepted_by(offers_accepted_by,save_dir_name) # can take a while
+    # plot_send_to(offers_send_to, save_dir_name)  # can take a while
+    # plot_accepted_by(offers_accepted_by,save_dir_name) # can take a while
     plot_send_and_accepted(offers_send_to, offers_accepted_by, save_dir_name)
     # plot_send_and_accepted(optimal_offers_send_to, optimal_offers_accepted_by, save_dir_name, suffix="optimal")
 
-
+    plot_alpha(alphas, offers_send_to, datacenters, save_dir_name)
 
 
 
